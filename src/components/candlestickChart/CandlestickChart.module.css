@@ -1,0 +1,7 @@
+.candlestickChart {
+  width: 100%;
+  object-fit: contain;
+  cursor: ew-resize;
+  user-select: none;
+  font-family: sans-serif;
+}
