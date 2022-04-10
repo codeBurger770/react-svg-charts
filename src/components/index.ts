@@ -1,1 +1,2 @@
-export * from './candlestickChart/CandlestickChart';
+export * from './candlestick-chart/CandlestickChart';
+export * from './line-chart/LineChart';

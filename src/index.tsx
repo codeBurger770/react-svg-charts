@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { CandlestickChart, ICandlestickChartProps } from './components';
+import { CandlestickChart, ICandlestickChartProps, ILineChartProps, LineChart } from './components';
 import reportWebVitals from './reportWebVitals';
 
-const CANDLESTICKS = [
+const DATA = [
   [
     "2022-03-24T06:00:00Z",
     0.0181,
@@ -733,20 +733,29 @@ const CANDLESTICKS = [
     0.02236,
     4846960000
   ]
-].map(i => ({
+];
+
+const DATA_LINE = DATA.map(i => ({
+  dateTime: i[0],
+  close: i[4],
+})) as ILineChartProps['data'];
+
+const DATA_CANDLESTICKS = DATA.map(i => ({
   dateTime: i[0],
   open: i[1],
   high: i[2],
   low: i[3],
   close: i[4],
   volume: i[5],
-})) as ICandlestickChartProps['candlesticks'];
+})) as ICandlestickChartProps['data'];
 
 ReactDOM.render(
   <React.StrictMode>
     <div className="container">
+      <h2>Линейный график</h2>
+      <LineChart data={DATA_LINE} />
       <h2>Свечной график</h2>
-      <CandlestickChart candlesticks={CANDLESTICKS} />
+      <CandlestickChart data={DATA_CANDLESTICKS} />
     </div>
   </React.StrictMode>,
   document.getElementById('root')

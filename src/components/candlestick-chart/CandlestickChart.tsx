@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import { interpolate } from "../../utils";
 import styles from "./CandlestickChart.module.css";
 
 export interface ICandlestickChartProps {
-    candlesticks: {
+    data: {
         dateTime: string;
         high: number;
         low: number;
@@ -19,7 +20,7 @@ export function CandlestickChart(props: ICandlestickChartProps) {
     const [xOffset, setXOffset] = useState(0);
 
     const { candlesticksWithX, xMin } = useMemo(() => {
-        const candlesticksWithX = [...props.candlesticks].reverse().map((i, index) => ({
+        const candlesticksWithX = [...props.data].reverse().map((i, index) => ({
             ...i,
             x: 875 - index * 20,
         })).reverse();
@@ -27,7 +28,7 @@ export function CandlestickChart(props: ICandlestickChartProps) {
             candlesticksWithX,
             xMin: candlesticksWithX[0].x,
         };
-    }, [props.candlesticks]);
+    }, [props.data]);
 
     const { candlesticksWithXOffset, valueMin, valueMax } = useMemo(() => {
         const candlesticksWithXOffset = candlesticksWithX.map(i => ({
@@ -207,8 +208,4 @@ export function CandlestickChart(props: ICandlestickChartProps) {
             {tooltip}
         </svg>
     );
-}
-
-function interpolate(value: number, inputRange: [number, number], outputRange: [number, number]) {
-    return outputRange[0] + (value - inputRange[0]) * (outputRange[1] - outputRange[0]) / (inputRange[1] - inputRange[0]);
 }
