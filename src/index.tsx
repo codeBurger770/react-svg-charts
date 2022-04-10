@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { CandlestickChart, ICandlestickChartProps, ILineChartProps, LineChart } from './components';
+import { CandlestickChart, ICandlestickChartProps, ILineChartProps, ILineChartV2Props, LineChart, LineChartV2 } from './components';
 import reportWebVitals from './reportWebVitals';
 
 const DATA = [
@@ -738,7 +738,7 @@ const DATA = [
 const DATA_LINE = DATA.map(i => ({
   dateTime: i[0],
   close: i[4],
-})) as ILineChartProps['data'];
+}));
 
 const DATA_CANDLESTICKS = DATA.map(i => ({
   dateTime: i[0],
@@ -747,15 +747,17 @@ const DATA_CANDLESTICKS = DATA.map(i => ({
   low: i[3],
   close: i[4],
   volume: i[5],
-})) as ICandlestickChartProps['data'];
+}));
 
 ReactDOM.render(
   <React.StrictMode>
     <div className="container">
       <h2>Линейный график</h2>
-      <LineChart data={DATA_LINE} />
+      <LineChart data={DATA_LINE as ILineChartProps['data']} />
+      <h2>Линейный график версия 2</h2>
+      <LineChartV2 data={DATA_LINE as ILineChartV2Props['data']} />
       <h2>Свечной график</h2>
-      <CandlestickChart data={DATA_CANDLESTICKS} />
+      <CandlestickChart data={DATA_CANDLESTICKS as ICandlestickChartProps['data']} />
     </div>
   </React.StrictMode>,
   document.getElementById('root')
