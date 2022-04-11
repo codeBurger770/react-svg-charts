@@ -46,15 +46,15 @@ export function LineChartV2(props: ILineChartV2Props) {
         const { close } = candlesticksWithXOffset[candlesticksWithXOffset.length - 1];
 
         if (close < valueMin) {
-            yAxis.push(<text key="yAxis-close" x="990" y="430" fill="#F26126" textAnchor="end">{close} &#8381;</text>);
+            yAxis.push(<text key="yAxis-close" x="990" y="425" fill="#F26126" textAnchor="end" alignmentBaseline="middle">{close} &#8381;</text>);
         } else if (close > valueMax) {
-            yAxis.push(<text key="yAxis-close" x="990" y="30" fill="#F26126" textAnchor="end">{close} &#8381;</text>);
+            yAxis.push(<text key="yAxis-close" x="990" y="25" fill="#F26126" textAnchor="end" alignmentBaseline="middle">{close} &#8381;</text>);
         } else {
             const y = interpolate(close, [valueMin, valueMax], [425, 25]);
             yAxis.push(
                 <React.Fragment key="yAxis-close">
                     <line x1="100" y1={y} x2="900" y2={y} stroke="#F26126" strokeDasharray="10 5" />
-                    <text x="990" y={y + 5} fill="#F26126" textAnchor="end">{close} &#8381;</text>
+                    <text x="990" y={y} fill="#F26126" textAnchor="end" alignmentBaseline="middle">{close} &#8381;</text>
                 </React.Fragment>
             );
         }
@@ -67,7 +67,7 @@ export function LineChartV2(props: ILineChartV2Props) {
             yAxis.push(
                 <React.Fragment key={`yAxis-${value}`}>
                     <line x1="100" y1={y} x2="900" y2={y} stroke="#F7F7F8" />
-                    <text x="10" y={y + 5} fill="#9393A1">{value} &#8381;</text>
+                    <text x="10" y={y} fill="#9393A1" alignmentBaseline="middle">{value} &#8381;</text>
                 </React.Fragment>
             );
         }
@@ -90,7 +90,7 @@ export function LineChartV2(props: ILineChartV2Props) {
                     xAxis.push(
                         <React.Fragment key={`xAxis-${date}`}>
                             <line x1={i.x} y1="0" x2={i.x} y2="450" stroke="#F7F7F8" />
-                            <text x={i.x} y="485" fill="#9393A1" textAnchor="middle">{date}</text>
+                            <text x={i.x} y="485" fill="#9393A1" textAnchor="middle" alignmentBaseline="middle">{date}</text>
                         </React.Fragment>
                     );
                 }
@@ -141,10 +141,10 @@ export function LineChartV2(props: ILineChartV2Props) {
                 <line x1={candlestickHovering.x} y1="0" x2={candlestickHovering.x} y2="450" stroke="#9393A1" />
                 <circle cx={candlestickHovering.x} cy={close} r="5" fill="#9393A1" />
                 <rect x={x} y="200" width={300} height="50" fill="#FFFFFF" stroke="#9393A1" />
-                <text x={x + 10} y="220" fill="#646478" fontWeight="bold">Закрытие</text>
-                <text x={x + 290} y="220" fill="#646478" textAnchor="end">{candlestickHovering.close} &#8381;</text>
-                <text x={x + 10} y="240" fill="#646478" fontWeight="bold">Дата</text>
-                <text x={x + 290} y="240" fill="#646478" textAnchor="end">{dateTime.toLocaleDateString()}, {dateTime.toLocaleTimeString()}</text>
+                <text x={x + 10} y="215" fill="#646478" alignmentBaseline="middle" fontWeight="bold">Закрытие</text>
+                <text x={x + 290} y="215" fill="#646478" textAnchor="end" alignmentBaseline="middle">{candlestickHovering.close} &#8381;</text>
+                <text x={x + 10} y="235" fill="#646478" alignmentBaseline="middle" fontWeight="bold">Дата</text>
+                <text x={x + 290} y="235" fill="#646478" textAnchor="end" alignmentBaseline="middle">{dateTime.toLocaleDateString()}, {dateTime.toLocaleTimeString()}</text>
             </>
         );
     }, [isMoving, xClient, candlesticksWithXOffset]);
