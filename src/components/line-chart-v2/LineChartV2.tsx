@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { interpolate } from "../../utils";
 import styles from "./LineChartV2.module.css";
 
@@ -14,6 +14,10 @@ export function LineChartV2(props: ILineChartV2Props) {
     const [isMoving, setMoving] = useState(false);
     const [xClient, setXClient] = useState(0);
     const [xOffset, setXOffset] = useState(0);
+
+    useEffect(() => {
+        setXOffset(0);
+    }, [props.data]);
 
     const { dataWithX, xMin } = useMemo(() => {
         const dataWithX = [...props.data].reverse().map((i, index) => ({
