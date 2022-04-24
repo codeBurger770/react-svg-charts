@@ -76,7 +76,7 @@ export function CandlestickChart(props: ICandlestickChartProps) {
         const interval = (valueMax - valueMin) / 4;
 
         for (let i = 0; i < 5; i++) {
-            const value = (valueMax - i * interval).toFixed(4);
+            const value = (valueMax - i * interval).toFixed(6);
             const y = i * 100 + 25;
             yAxis.push(
                 <React.Fragment key={`yAxis-${value}`}>
