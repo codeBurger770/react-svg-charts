@@ -48,7 +48,7 @@ export function CandlestickChart(props: ICandlestickChartProps) {
             valueMin: Math.min(...values),
             valueMax: Math.max(...values),
         };
-    }, [dataWithX, xOffset]);
+    }, [xOffset, dataWithX]);
 
     const yAxis = useMemo(() => {
         const yAxis: JSX.Element[] = [];
@@ -60,15 +60,15 @@ export function CandlestickChart(props: ICandlestickChartProps) {
         const { close } = dataWithXOffset[dataWithXOffset.length - 1];
 
         if (close < valueMin) {
-            yAxis.push(<text key="yAxis-close" x="995" y="425" fill="#F26126" textAnchor="end" alignmentBaseline="middle">{close} &#8381;</text>);
+            yAxis.push(<text key="yAxis-close" x={1000} y={425} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>);
         } else if (close > valueMax) {
-            yAxis.push(<text key="yAxis-close" x="995" y="25" fill="#F26126" textAnchor="end" alignmentBaseline="middle">{close} &#8381;</text>);
+            yAxis.push(<text key="yAxis-close" x={1000} y={25} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>);
         } else {
             const y = interpolate(close, [valueMin, valueMax], [425, 25]) || 25;
             yAxis.push(
                 <React.Fragment key="yAxis-close">
-                    <line x1="100" y1={y} x2="900" y2={y} stroke="#F26126" strokeDasharray="10 5" />
-                    <text x="995" y={y} fill="#F26126" textAnchor="end" alignmentBaseline="middle">{close} &#8381;</text>
+                    <line x1={100} y1={y} x2={900} y2={y} strokeDasharray="10 5" stroke="#F26126" />
+                    <text x={1000} y={y} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>
                 </React.Fragment>
             );
         }
@@ -80,8 +80,8 @@ export function CandlestickChart(props: ICandlestickChartProps) {
             const y = i * 100 + 25;
             yAxis.push(
                 <React.Fragment key={`yAxis-${value}`}>
-                    <line x1="100" y1={y} x2="900" y2={y} stroke="#F7F7F8" />
-                    <text x="5" y={y} fill="#9393A1" alignmentBaseline="middle">{value} &#8381;</text>
+                    <line x1={100} y1={y} x2={900} y2={y} stroke="#F7F7F8" />
+                    <text x={0} y={y} fill="#9393A1" alignmentBaseline="middle">{value} &#8381;</text>
                 </React.Fragment>
             );
         }
@@ -105,8 +105,8 @@ export function CandlestickChart(props: ICandlestickChartProps) {
                     xPrev = i.x;
                     xAxis.push(
                         <React.Fragment key={`xAxis-${date}`}>
-                            <line x1={i.x} y1="0" x2={i.x} y2="450" stroke="#F7F7F8" />
-                            <text x={i.x} y="485" fill="#9393A1" textAnchor="middle" alignmentBaseline="middle">{date}</text>
+                            <line x1={i.x} y1={0} x2={i.x} y2={450} stroke="#F7F7F8" />
+                            <text x={i.x} y={475} fill="#9393A1" alignmentBaseline="middle" textAnchor="middle">{date}</text>
                         </React.Fragment>
                     );
                 }
@@ -134,84 +134,83 @@ export function CandlestickChart(props: ICandlestickChartProps) {
     }, [dataWithXOffset]);
 
     const tooltip = useMemo(() => {
-        if (!ref.current || isMoving || !xClient) {
+        if (!ref.current || isMoving) {
             return null;
         }
 
         const boundingClientRect = ref.current.getBoundingClientRect();
-        let x = (xClient - boundingClientRect.x) / boundingClientRect.width * 1000;
-        let itemHovering: any;
-        let intervalPrev = 1000;
+        let item: any;
+        const x = (xClient - boundingClientRect.x) / boundingClientRect.width * 1000;
+        let intervalPrev = Number.MAX_SAFE_INTEGER;
+
         dataWithXOffset.forEach(i => {
             const interval = Math.abs(i.x - x);
 
             if (interval <= 10 && interval < intervalPrev) {
                 intervalPrev = interval;
-                itemHovering = i;
+                item = i;
             }
         });
 
-        if (!itemHovering || (itemHovering.x < 125 || itemHovering.x > 875)) {
+        if (!item || (item.x < 125 || item.x > 875)) {
             return null;
         }
 
-        x = itemHovering.x >= 500 ? itemHovering.x - 320 : itemHovering.x + 20;
-        const dateTime = new Date(itemHovering.dateTime);
+        const xRect = item.x >= 500 ? item.x - 320 : item.x + 20;
+        const dateTime = new Date(item.dateTime);
 
         return (
             <>
-                <rect x={itemHovering.x - 10} y="0" width={20} height="450" fill="#9393A1" fillOpacity="0.5" />
-                <rect x={x} y="160" width={300} height="130" fill="#FFFFFF" stroke="#9393A1" />
-                <text x={x + 10} y="175" fill="#646478" alignmentBaseline="middle" fontWeight="bold">Открытие</text>
-                <text x={x + 290} y="175" fill="#646478" textAnchor="end" alignmentBaseline="middle">{itemHovering.open} &#8381;</text>
-                <text x={x + 10} y="195" fill="#646478" alignmentBaseline="middle" fontWeight="bold">Закрытие</text>
-                <text x={x + 290} y="195" fill="#646478" textAnchor="end" alignmentBaseline="middle">{itemHovering.close} &#8381;</text>
-                <text x={x + 10} y="215" fill="#646478" alignmentBaseline="middle" fontWeight="bold">Максимум</text>
-                <text x={x + 290} y="215" fill="#646478" textAnchor="end" alignmentBaseline="middle">{itemHovering.high} &#8381;</text>
-                <text x={x + 10} y="235" fill="#646478" alignmentBaseline="middle" fontWeight="bold">Минимум</text>
-                <text x={x + 290} y="235" fill="#646478" textAnchor="end" alignmentBaseline="middle">{itemHovering.low} &#8381;</text>
-                <text x={x + 10} y="255" fill="#646478" alignmentBaseline="middle" fontWeight="bold">Объём</text>
-                <text x={x + 290} y="255" fill="#646478" textAnchor="end" alignmentBaseline="middle">{itemHovering.volume}</text>
-                <text x={x + 10} y="275" fill="#646478" alignmentBaseline="middle" fontWeight="bold">Дата</text>
-                <text x={x + 290} y="275" fill="#646478" textAnchor="end" alignmentBaseline="middle">{dateTime.toLocaleDateString()}, {dateTime.toLocaleTimeString()}</text>
+                <rect x={item.x - 10} y={0} width={20} height={450} fillOpacity={0.5} fill="#9393A1" />
+                <rect x={xRect} y={160} width={300} height={130} fill="#FFFFFF" stroke="#9393A1" />
+                <text x={xRect + 10} y={180} fill="#646478" fontWeight="bold">Открытие</text>
+                <text x={xRect + 290} y={180} fill="#646478" textAnchor="end">{item.open} &#8381;</text>
+                <text x={xRect + 10} y={200} fill="#646478" fontWeight="bold">Закрытие</text>
+                <text x={xRect + 290} y={200} fill="#646478" textAnchor="end">{item.close} &#8381;</text>
+                <text x={xRect + 10} y={220} fill="#646478" fontWeight="bold">Максимум</text>
+                <text x={xRect + 290} y={220} fill="#646478" textAnchor="end">{item.high} &#8381;</text>
+                <text x={xRect + 10} y={240} fill="#646478" fontWeight="bold">Минимум</text>
+                <text x={xRect + 290} y={240} fill="#646478" textAnchor="end">{item.low} &#8381;</text>
+                <text x={xRect + 10} y={260} fill="#646478" fontWeight="bold">Объём</text>
+                <text x={xRect + 290} y={260} fill="#646478" textAnchor="end">{item.volume}</text>
+                <text x={xRect + 10} y={280} fill="#646478" fontWeight="bold">Дата</text>
+                <text x={xRect + 290} y={280} fill="#646478" textAnchor="end">{dateTime.toLocaleDateString()}, {dateTime.toLocaleTimeString()}</text>
             </>
         );
     }, [isMoving, xClient, dataWithXOffset]);
 
-    const start = useCallback((e: any) => {
+    const handleStart = useCallback(e => {
         setMoving(true);
-        setXClient(e.clientX ?? e.touches[0].clientX);
+        setXClient(e.nativeEvent.touches?.[0].clientX ?? e.nativeEvent.clientX);
     }, []);
 
-    const move = useCallback((e: any) => {
+    const handleMove = useCallback(e => {
+        const xClientTemp = e.nativeEvent.touches?.[0].clientX ?? e.nativeEvent.clientX;
+
         if (isMoving) {
             setXOffset(xOffsetPrev => {
-                const xOffset = xOffsetPrev + xClient - (e.clientX ?? e.touches[0].clientX);
-                return xOffset <= xMin - 125
-                    ? xMin - 125
-                    : xOffset >= 0
-                        ? 0
-                        : xOffset;
+                const xOffsetTemp = xOffsetPrev + xClient - xClientTemp;
+                return xOffsetTemp <= xMin - 125 ? xMin - 125 : xOffsetTemp >= 0 ? 0 : xOffsetTemp;
             });
         }
 
-        setXClient(e.clientX ?? e.touches[0].clientX);
+        setXClient(xClientTemp);
     }, [xClient, xMin]);
 
-    const end = useCallback(() => setMoving(false), []);
+    const handleFinish = useCallback(() => setMoving(false), []);
 
     return (
         <svg
             className={styles.candlestickChart}
             viewBox="0 0 1000 500"
             ref={ref as any}
-            onMouseDown={start}
-            onMouseMove={move}
-            onMouseUp={end}
-            onMouseLeave={end}
-            onTouchStart={start}
-            onTouchMove={move}
-            onTouchEnd={end}
+            onMouseDown={handleStart}
+            onMouseMove={handleMove}
+            onMouseUp={handleFinish}
+            onMouseLeave={handleFinish}
+            onTouchStart={handleStart}
+            onTouchMove={handleMove}
+            onTouchEnd={handleFinish}
         >
             {xAxis}
             {yAxis}
