@@ -62,7 +62,7 @@ export function CandlestickChart(props: ICandlestickChartProps) {
 
         for (let i = 4; i >= (valueMin === valueMax ? 4 : 0); i--) {
             const value = +(valueMax - i * interval).toFixed(6);
-            const y = i * 100 + 20;
+            const y = i * 100 + 25;
             yAxis.push(
                 <React.Fragment key={`yAxis-${value}`}>
                     <line x1={100} y1={y} x2={900} y2={y} stroke="#F7F7F8" />
@@ -74,11 +74,11 @@ export function CandlestickChart(props: ICandlestickChartProps) {
         const { close } = dataWithXOffset[dataWithXOffset.length - 1];
 
         if (close < valueMin) {
-            yAxis.push(<text key="yAxis-close" x={1000} y={420} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>);
+            yAxis.push(<text key="yAxis-close" x={1000} y={425} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>);
         } else if (close > valueMax) {
-            yAxis.push(<text key="yAxis-close" x={1000} y={20} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>);
+            yAxis.push(<text key="yAxis-close" x={1000} y={25} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>);
         } else {
-            const y = valueMin === valueMax ? 420 : interpolate(close, [valueMin, valueMax], [420, 20]);
+            const y = valueMin === valueMax ? 425 : interpolate(close, [valueMin, valueMax], [425, 25]);
             yAxis.push(
                 <React.Fragment key="yAxis-close">
                     <line x1={100} y1={y} x2={900} y2={y} strokeDasharray="10 5" stroke="#F26126" />
@@ -106,7 +106,7 @@ export function CandlestickChart(props: ICandlestickChartProps) {
                     xPrev = i.x;
                     xAxis.push(
                         <React.Fragment key={`xAxis-${date}`}>
-                            <line x1={i.x} y1={0} x2={i.x} y2={470} stroke="#F7F7F8" />
+                            <line x1={i.x} y1={0} x2={i.x} y2={475} stroke="#F7F7F8" />
                             <text x={i.x} y={500} fill="#9393A1" textAnchor="middle">{date}</text>
                         </React.Fragment>
                     );
@@ -114,10 +114,10 @@ export function CandlestickChart(props: ICandlestickChartProps) {
             }
 
             if (i.x >= 120 && i.x <= 880) {
-                const high = valueMin === valueMax ? 420 : interpolate(i.high, [valueMin, valueMax], [420, 20]);
-                const low = valueMin === valueMax ? 420 : interpolate(i.low, [valueMin, valueMax], [420, 20]);
-                const open = valueMin === valueMax ? 420 : interpolate(i.open, [valueMin, valueMax], [420, 20]);
-                const close = valueMin === valueMax ? 420 : interpolate(i.close, [valueMin, valueMax], [420, 20]);
+                const high = valueMin === valueMax ? 425 : interpolate(i.high, [valueMin, valueMax], [425, 25]);
+                const low = valueMin === valueMax ? 425 : interpolate(i.low, [valueMin, valueMax], [425, 25]);
+                const open = valueMin === valueMax ? 425 : interpolate(i.open, [valueMin, valueMax], [425, 25]);
+                const close = valueMin === valueMax ? 425 : interpolate(i.close, [valueMin, valueMax], [425, 25]);
                 const color = close >= open ? '#3CD280' : '#FF5050';
                 candlesticks.push((
                     <React.Fragment key={`candlestick-${i.x}`}>
@@ -162,7 +162,7 @@ export function CandlestickChart(props: ICandlestickChartProps) {
 
         return (
             <>
-                <rect x={item.x - 10} y={0} width={20} height={470} fillOpacity={0.5} fill="#9393A1" />
+                <rect x={item.x - 10} y={0} width={20} height={475} fillOpacity={0.5} fill="#9393A1" />
                 <rect x={xRect} y={160} width={300} height={130} fill="#FFFFFF" stroke="#9393A1" />
                 <text x={xRect + 10} y={180} fill="#646478" fontWeight="bold">Открытие</text>
                 <text x={xRect + 290} y={180} fill="#646478" textAnchor="end">{item.open} &#8381;</text>
