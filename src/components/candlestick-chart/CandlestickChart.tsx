@@ -27,6 +27,10 @@ export function CandlestickChart(props: ICandlestickChartProps) {
         const interval = props.data.length === 1 ? 0 : props.data.length > 38 ? 20 : 760 / (props.data.length - 1);
         const dataWithX = [...props.data].reverse().map((i, index) => ({
             ...i,
+            high: +i.high.toFixed(6),
+            low: +i.low.toFixed(6),
+            open: +i.open.toFixed(6),
+            close: +i.close.toFixed(6),
             x: 880 - index * interval,
         })).reverse();
         return {

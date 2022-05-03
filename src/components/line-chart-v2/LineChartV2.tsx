@@ -23,6 +23,7 @@ export function LineChartV2(props: ILineChartV2Props) {
         const interval = props.data.length === 1 ? 0 : props.data.length > 38 ? 20 : 760 / (props.data.length - 1);
         const dataWithX = [...props.data].reverse().map((i, index) => ({
             ...i,
+            value: +i.value.toFixed(6),
             x: 880 - index * interval,
         })).reverse();
         return {

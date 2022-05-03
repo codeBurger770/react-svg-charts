@@ -736,7 +736,7 @@ const DATA = [
 ] as [string, number, number, number, number, number][];
 
 export function App() {
-    const [count, setCount] = useState<undefined>();
+    const [count, setCount] = useState<number>();
 
     const data = useMemo(() => DATA.slice(0, count), [count]);
 
