@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { CandlestickChart } from "../candlestick-chart/CandlestickChart";
+import { DonutChart } from "../donut-chart/DonutChart";
 import { LineChartV2 } from "../line-chart-v2/LineChartV2";
 import { LineChart } from "../line-chart/LineChart";
 
@@ -739,6 +740,8 @@ export function App() {
 
     const data = useMemo(() => DATA.slice(0, count), [count]);
 
+    const dataDonut = useMemo(() => data.map(i => i[5]), [data]);
+
     const dataLine = useMemo(() => data.map(i => ({
         dateTime: i[0],
         close: i[4],
@@ -757,8 +760,10 @@ export function App() {
 
     return (
         <div className="container">
-            <h2>Количество точек</h2>
-            <input type='number' value={count} onChange={handleChange} />
+            <h2>Количество элементов</h2>
+            <input type='number' min={0} max={DATA.length} value={count} onChange={handleChange} />
+            <h2>Пончиковая диаграмма</h2>
+            <DonutChart data={dataDonut} />
             <h2>Линейный график</h2>
             <LineChart data={dataLine} />
             <h2>Линейный график версия 2</h2>

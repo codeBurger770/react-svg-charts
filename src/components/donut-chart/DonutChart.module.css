@@ -1,0 +1,10 @@
+.chart {
+  width: 100%;
+  object-fit: contain;
+  user-select: none;
+  font-family: sans-serif;
+}
+
+.chart__path:hover {
+  cursor: pointer;
+}
