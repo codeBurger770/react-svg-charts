@@ -100,7 +100,7 @@ export function DonutChart(props: IDonutChartProps) {
                         {dataWithPercent[indexActive].value}
                     </text>
                     <text x={CENTER_X} y={CENTER_Y + FONT_SIZE / 2} fontSize={FONT_SIZE} fill="#9393A1" alignmentBaseline="middle" textAnchor="middle">
-                        {dataWithPercent[indexActive].percent * 100}%
+                        {(dataWithPercent[indexActive].percent * 100).toFixed(PERCENT_FRACTION_DIGITS / 2)}%
                     </text>
                 </>
             ),

@@ -5,7 +5,7 @@ import styles from "./LineChart.module.css";
 export interface ILineChartProps {
     data: {
         dateTime: string;
-        close: number;
+        value: number;
     }[];
 }
 
@@ -38,7 +38,7 @@ export function LineChart(props: ILineChartProps) {
         }));
         const values = dataWithXOffset
             .filter(i => i.x >= 120 && i.x <= 880)
-            .map(i => i.close);
+            .map(i => i.value);
         return {
             dataWithXOffset,
             valueMin: Math.min(...values),
@@ -61,23 +61,23 @@ export function LineChart(props: ILineChartProps) {
             yAxis.push(
                 <React.Fragment key={`yAxis-${value}`}>
                     <line x1={100} y1={y} x2={900} y2={y} stroke="#F7F7F8" />
-                    <text x={0} y={y} fill="#9393A1" alignmentBaseline="middle">{value} &#8381;</text>
+                    <text x={0} y={y} fill="#9393A1" alignmentBaseline="middle">{value}</text>
                 </React.Fragment>
             );
         }
 
-        const { close } = dataWithXOffset[dataWithXOffset.length - 1];
+        const { value } = dataWithXOffset[dataWithXOffset.length - 1];
 
-        if (close < valueMin) {
-            yAxis.push(<text key="yAxis-close" x={1000} y={425} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>);
-        } else if (close > valueMax) {
-            yAxis.push(<text key="yAxis-close" x={1000} y={25} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>);
+        if (value < valueMin) {
+            yAxis.push(<text key="yAxis-current" x={1000} y={425} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{value}</text>);
+        } else if (value > valueMax) {
+            yAxis.push(<text key="yAxis-current" x={1000} y={25} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{value}</text>);
         } else {
-            const y = valueMin === valueMax ? 425 : interpolate(close, [valueMin, valueMax], [425, 25]);
+            const y = valueMin === valueMax ? 425 : interpolate(value, [valueMin, valueMax], [425, 25]);
             yAxis.push(
-                <React.Fragment key="yAxis-close">
+                <React.Fragment key="yAxis-current">
                     <line x1={100} y1={y} x2={900} y2={y} strokeDasharray="10 5" stroke="#F26126" />
-                    <text x={1000} y={y} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>
+                    <text x={1000} y={y} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{value}</text>
                 </React.Fragment>
             );
         }
@@ -92,7 +92,7 @@ export function LineChart(props: ILineChartProps) {
         let xPrev = dataWithXOffset.length ? dataWithXOffset[0].x : 0;
 
         dataWithXOffset.forEach(i => {
-            const date = new Date(i.dateTime).toLocaleDateString();
+            const date = new Date(i.dateTime).toLocaleDateString('ru');
 
             if (datePrev !== date) {
                 datePrev = date;
@@ -109,7 +109,7 @@ export function LineChart(props: ILineChartProps) {
             }
 
             if (i.x >= 120 && i.x <= 880) {
-                const y = valueMin === valueMax ? 425 : interpolate(i.close, [valueMin, valueMax], [425, 25]);
+                const y = valueMin === valueMax ? 425 : interpolate(i.value, [valueMin, valueMax], [425, 25]);
                 linePoints.push(`${i.x},${y}`);
             }
         });
@@ -143,20 +143,24 @@ export function LineChart(props: ILineChartProps) {
             return null;
         }
 
-        const yCircle = valueMin === valueMax ? 425 : interpolate(item.close, [valueMin, valueMax], [425, 25]);
-        const xRect = item.x >= 500 ? item.x - 310 : item.x + 10;
+        const yCircle = valueMin === valueMax ? 425 : interpolate(item.value, [valueMin, valueMax], [425, 25]);
+        const xRect = item.x >= 500 ? item.x - 160 : item.x + 10;
         const yRect = yCircle - 50 <= 25 ? 25 : yCircle >= 375 ? 375 : yCircle - 25;
-        const dateTime = new Date(item.dateTime);
+        const dateTime = new Date(item.dateTime).toLocaleTimeString('ru', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
 
         return (
             <>
                 <line x1={item.x} y1={0} x2={item.x} y2={475} stroke="#9393A1" />
                 <circle cx={item.x} cy={yCircle} r={5} fill="#9393A1" />
-                <rect x={xRect} y={yRect} width={300} height={50} fill="#FFFFFF" stroke="#9393A1" />
-                <text x={xRect + 10} y={yRect + 20} fill="#646478" fontWeight="bold">Закрытие</text>
-                <text x={xRect + 290} y={yRect + 20} fill="#646478" textAnchor="end">{item.close} &#8381;</text>
-                <text x={xRect + 10} y={yRect + 40} fill="#646478" fontWeight="bold">Дата</text>
-                <text x={xRect + 290} y={yRect + 40} fill="#646478" textAnchor="end">{dateTime.toLocaleDateString()}, {dateTime.toLocaleTimeString()}</text>
+                <rect x={xRect} y={yRect} width={150} height={50} fill="#FFFFFF" stroke="#9393A1" />
+                <text x={xRect + 10} y={yRect + 20} fill="#646478">{item.value}</text>
+                <text x={xRect + 10} y={yRect + 40} fill="#646478">{dateTime}</text>
             </>
         );
     }, [isMoving, xClient, dataWithXOffset, valueMin, valueMax]);
@@ -183,7 +187,7 @@ export function LineChart(props: ILineChartProps) {
 
     return (
         <svg
-            className={styles.lineChart}
+            className={styles.chart}
             viewBox="0 0 1000 500"
             ref={ref as any}
             onMouseDown={handleStart}

@@ -66,7 +66,7 @@ export function CandlestickChart(props: ICandlestickChartProps) {
             yAxis.push(
                 <React.Fragment key={`yAxis-${value}`}>
                     <line x1={100} y1={y} x2={900} y2={y} stroke="#F7F7F8" />
-                    <text x={0} y={y} fill="#9393A1" alignmentBaseline="middle">{value} &#8381;</text>
+                    <text x={0} y={y} fill="#9393A1" alignmentBaseline="middle">{value}</text>
                 </React.Fragment>
             );
         }
@@ -74,15 +74,15 @@ export function CandlestickChart(props: ICandlestickChartProps) {
         const { close } = dataWithXOffset[dataWithXOffset.length - 1];
 
         if (close < valueMin) {
-            yAxis.push(<text key="yAxis-close" x={1000} y={425} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>);
+            yAxis.push(<text key="yAxis-current" x={1000} y={425} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close}</text>);
         } else if (close > valueMax) {
-            yAxis.push(<text key="yAxis-close" x={1000} y={25} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>);
+            yAxis.push(<text key="yAxis-current" x={1000} y={25} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close}</text>);
         } else {
             const y = valueMin === valueMax ? 425 : interpolate(close, [valueMin, valueMax], [425, 25]);
             yAxis.push(
-                <React.Fragment key="yAxis-close">
+                <React.Fragment key="yAxis-current">
                     <line x1={100} y1={y} x2={900} y2={y} strokeDasharray="10 5" stroke="#F26126" />
-                    <text x={1000} y={y} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close} &#8381;</text>
+                    <text x={1000} y={y} fill="#F26126" alignmentBaseline="middle" textAnchor="end">{close}</text>
                 </React.Fragment>
             );
         }
@@ -97,7 +97,7 @@ export function CandlestickChart(props: ICandlestickChartProps) {
         let xPrev = dataWithXOffset.length ? dataWithXOffset[0].x : 0;
 
         dataWithXOffset.forEach(i => {
-            const date = new Date(i.dateTime).toLocaleDateString();
+            const date = new Date(i.dateTime).toLocaleDateString('ru');
 
             if (datePrev !== date) {
                 datePrev = date;
@@ -157,25 +157,31 @@ export function CandlestickChart(props: ICandlestickChartProps) {
             return null;
         }
 
-        const xRect = item.x >= 500 ? item.x - 320 : item.x + 20;
-        const dateTime = new Date(item.dateTime);
+        const xRect = item.x >= 500 ? item.x - 280 : item.x + 20;
+        const dateTime = new Date(item.dateTime).toLocaleTimeString('ru', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
 
         return (
             <>
                 <rect x={item.x - 10} y={0} width={20} height={475} fillOpacity={0.5} fill="#9393A1" />
-                <rect x={xRect} y={160} width={300} height={130} fill="#FFFFFF" stroke="#9393A1" />
+                <rect x={xRect} y={160} width={260} height={130} fill="#FFFFFF" stroke="#9393A1" />
                 <text x={xRect + 10} y={180} fill="#646478" fontWeight="bold">Открытие</text>
-                <text x={xRect + 290} y={180} fill="#646478" textAnchor="end">{item.open} &#8381;</text>
+                <text x={xRect + 250} y={180} fill="#646478" textAnchor="end">{item.open}</text>
                 <text x={xRect + 10} y={200} fill="#646478" fontWeight="bold">Закрытие</text>
-                <text x={xRect + 290} y={200} fill="#646478" textAnchor="end">{item.close} &#8381;</text>
+                <text x={xRect + 250} y={200} fill="#646478" textAnchor="end">{item.close}</text>
                 <text x={xRect + 10} y={220} fill="#646478" fontWeight="bold">Максимум</text>
-                <text x={xRect + 290} y={220} fill="#646478" textAnchor="end">{item.high} &#8381;</text>
+                <text x={xRect + 250} y={220} fill="#646478" textAnchor="end">{item.high}</text>
                 <text x={xRect + 10} y={240} fill="#646478" fontWeight="bold">Минимум</text>
-                <text x={xRect + 290} y={240} fill="#646478" textAnchor="end">{item.low} &#8381;</text>
+                <text x={xRect + 250} y={240} fill="#646478" textAnchor="end">{item.low}</text>
                 <text x={xRect + 10} y={260} fill="#646478" fontWeight="bold">Объём</text>
-                <text x={xRect + 290} y={260} fill="#646478" textAnchor="end">{item.volume}</text>
+                <text x={xRect + 250} y={260} fill="#646478" textAnchor="end">{item.volume}</text>
                 <text x={xRect + 10} y={280} fill="#646478" fontWeight="bold">Дата</text>
-                <text x={xRect + 290} y={280} fill="#646478" textAnchor="end">{dateTime.toLocaleDateString()}, {dateTime.toLocaleTimeString()}</text>
+                <text x={xRect + 250} y={280} fill="#646478" textAnchor="end">{dateTime}</text>
             </>
         );
     }, [isMoving, xClient, dataWithXOffset]);
@@ -202,7 +208,7 @@ export function CandlestickChart(props: ICandlestickChartProps) {
 
     return (
         <svg
-            className={styles.candlestickChart}
+            className={styles.chart}
             viewBox="0 0 1000 500"
             ref={ref as any}
             onMouseDown={handleStart}

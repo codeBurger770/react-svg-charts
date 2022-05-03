@@ -5,6 +5,6 @@
   font-family: sans-serif;
 }
 
-.chart__path:hover {
+.chart__path {
   cursor: pointer;
 }

@@ -736,7 +736,7 @@ const DATA = [
 ] as [string, number, number, number, number, number][];
 
 export function App() {
-    const [count, setCount] = useState<number>();
+    const [count, setCount] = useState<undefined>();
 
     const data = useMemo(() => DATA.slice(0, count), [count]);
 
@@ -744,7 +744,7 @@ export function App() {
 
     const dataLine = useMemo(() => data.map(i => ({
         dateTime: i[0],
-        close: i[4],
+        value: i[4],
     })), [data]);
 
     const dataCandlesticks = useMemo(() => data.map(i => ({
@@ -756,12 +756,16 @@ export function App() {
         volume: i[5],
     })), [data]);
 
-    const handleChange = useCallback(e => setCount(e.target.value === '' ? undefined : e.target.value), []);
+    const handleChange = useCallback(e => {
+        if (Number(e.target.value) >= 0 && Number(e.target.value) <= DATA.length) {
+            setCount(e.target.value === '' ? undefined : e.target.value)
+        }
+    }, []);
 
     return (
         <div className="container">
-            <h2>Количество элементов</h2>
-            <input type='number' min={0} max={DATA.length} value={count} onChange={handleChange} />
+            <h2>Количество элементов (от 0 до {DATA.length})</h2>
+            <input type='number' value={count} onChange={handleChange} />
             <h2>Пончиковая диаграмма</h2>
             <DonutChart data={dataDonut} />
             <h2>Линейный график</h2>
