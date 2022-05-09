@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./DonutChart.module.css";
 
 const WIDTH = 1000;
@@ -15,14 +15,21 @@ const PERCENT_FRACTION_DIGITS = 4;
 
 export interface IDonutChartProps {
     data: number[];
+    indexActive?: number;
+    setIndexActive?(indexActive: number): void;
 }
 
 export function DonutChart(props: IDonutChartProps) {
     const [indexActive, setIndexActive] = useState<number>();
 
     useEffect(() => {
-        setIndexActive(undefined);
-    }, [props.data]);
+        setIndexActive(props.indexActive);
+    }, [props.indexActive]);
+
+    const handleClick = useCallback((indexActive: number) => {
+        setIndexActive(indexActive);
+        props.setIndexActive?.(indexActive);
+    }, [props.setIndexActive]);
 
     const dataWithPercent = useMemo(() => {
         if (!props.data.length) {
@@ -68,7 +75,6 @@ export function DonutChart(props: IDonutChartProps) {
             let yFinish = CENTER_Y + RADIUS * Math.sin(angle);
             let d = `M ${xStart} ${yStart} A ${RADIUS} ${RADIUS} 0 0 1 ${xFinish} ${yFinish}`;
 
-
             if (i.percent > 0.5) {
                 angle += 2 * Math.PI * (i.percent - 0.5);
                 xFinish = CENTER_X + RADIUS * Math.cos(angle);
@@ -87,14 +93,14 @@ export function DonutChart(props: IDonutChartProps) {
                     strokeWidth={index === indexActive ? STROKE_WIDTH_ACTIVE : STROKE_WIDTH}
                     stroke={STROKE_COLORS[index % STROKE_COLORS.length]}
                     fill="none"
-                    onClick={() => setIndexActive(index)}
+                    onClick={() => handleClick(index)}
                 />
             );
         });
 
         return {
             paths,
-            info: indexActive == null ? null : (
+            info: indexActive == null || dataWithPercent[indexActive] == null ? null : (
                 <>
                     <text x={CENTER_X} y={CENTER_Y - FONT_SIZE / 2} fontSize={FONT_SIZE} fill="#9393A1" alignmentBaseline="middle" textAnchor="middle">
                         {dataWithPercent[indexActive].value}
