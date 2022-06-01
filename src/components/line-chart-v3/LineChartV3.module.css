@@ -1,0 +1,6 @@
+.chart {
+  width: 100%;
+  object-fit: contain;
+  user-select: none;
+  font-family: sans-serif;
+}

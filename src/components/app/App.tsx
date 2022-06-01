@@ -1,8 +1,10 @@
 import { useCallback, useMemo, useState } from "react";
 import { CandlestickChart } from "../candlestick-chart/CandlestickChart";
+import { CandlestickChartV2 } from "../candlestick-chart-v2/CandlestickChartV2";
 import { DonutChart } from "../donut-chart/DonutChart";
-import { LineChartV2 } from "../line-chart-v2/LineChartV2";
 import { LineChart } from "../line-chart/LineChart";
+import { LineChartV2 } from "../line-chart-v2/LineChartV2";
+import { LineChartV3 } from "../line-chart-v3/LineChartV3";
 
 const DATA = [
     [
@@ -772,8 +774,12 @@ export function App() {
             <LineChart data={dataLine} />
             <h2>Линейный график версия 2</h2>
             <LineChartV2 data={dataLine} />
+            <h2>Линейный график версия 3</h2>
+            <LineChartV3 data={dataLine} />
             <h2>Свечной график</h2>
             <CandlestickChart data={dataCandlesticks} />
+            <h2>Свечной график версия 2</h2>
+            <CandlestickChartV2 data={dataCandlesticks} />
         </div>
     );
 }
