@@ -169,7 +169,7 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
         const boundingClientRect = ref.current?.getBoundingClientRect();
         const x = (xClient - (boundingClientRect?.x ?? 0)) / (boundingClientRect?.width ?? 0) * 1000;
         const index = Math.round((x - 110) / intervalBetweenValues);
-        const dataWithXOffsetFiltered = dataWithXOffset.filter(i => i.x >= 110 && i.x <= 900);
+        const dataWithXOffsetFiltered = dataWithXOffset.filter(i => i.x >= 110 && i.x <= 990);
         const item = dataWithXOffsetFiltered[index < 0 ? 0 : index > dataWithXOffsetFiltered.length - 1 ? dataWithXOffsetFiltered.length - 1 : index];
 
         if (!item) {
