@@ -16,7 +16,7 @@ export interface ICandlestickChartV2Props {
 export function CandlestickChartV2(props: ICandlestickChartV2Props) {
     const ref = useRef<SVGSVGElement>();
     const [isMoving, setMoving] = useState(false);
-    const [xClient, setXClient] = useState<number>();
+    const [xClient, setXClient] = useState(0);
     const [xOffset, setXOffset] = useState(0);
 
     useEffect(() => {
@@ -24,7 +24,7 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
     }, [props.data]);
 
     const { dataWithX, valueCurrent, intervalBetweenValues, xMin } = useMemo(() => {
-        const intervalBetweenValues = props.data.length > 1 ? props.data.length > 38 ? 20 : 880 / (props.data.length - 1) : 0;
+        const intervalBetweenValues = props.data.length > 1 ? Math.max(880 / (props.data.length - 1), 20) : 0;
         const dataWithX = [...props.data].reverse().map((i, index) => ({
             ...i,
             high: +i.high.toFixed(6),
@@ -72,12 +72,12 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
             if (dateTimePrev !== dateTime) {
                 dateTimePrev = dateTime;
 
-                if (i.x >= 110 && i.x <= 990 && (i.x - xPrev) >= (i.x >= 950 ? 150 : 100)) {
+                if (i.x >= 110 && i.x <= 990 && (i.x - xPrev) >= (i.x >= 940 ? 150 : 100)) {
                     xPrev = i.x;
                     xAxis.push(
                         <React.Fragment key={dateTime}>
                             <line x1={i.x} y1={0} x2={i.x} y2={475} stroke="#F7F7F8" />
-                            <text x={i.x} y={500} fill="#9393A1" textAnchor={i.x >= 950 ? 'end' : 'middle'}>{dateTime}</text>
+                            <text x={i.x} y={500} fill="#9393A1" textAnchor={i.x >= 940 ? 'end' : 'middle'}>{dateTime}</text>
                         </React.Fragment>
                     );
                 }
@@ -92,8 +92,8 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
             const value = +valueMin.toFixed(6);
             return (
                 <>
-                    <line x1={100} y1={225} x2={1000} y2={225} stroke="#F7F7F8" />
-                    <text x={0} y={225} fill="#9393A1" alignmentBaseline="middle">{value}</text>
+                    <line x1={100} y1={250} x2={1000} y2={250} stroke="#F7F7F8" />
+                    <text x={0} y={250} fill="#9393A1" alignmentBaseline="middle">{value}</text>
                 </>
             );
         }
@@ -103,7 +103,7 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
 
         for (let i = 0; i < 5; i++) {
             const value = +(valueMax - i * intervalBetweenValueMaxAndValueMin).toFixed(6);
-            const y = i * 100 + 25;
+            const y = i * 100 + 50;
             yAxis.push(
                 <React.Fragment key={value}>
                     <line x1={100} y1={y} x2={1000} y2={y} stroke="#F7F7F8" />
@@ -116,22 +116,30 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
     }, [valueMin, valueMax]);
 
     const yAxisCurrent = useMemo(() => {
-        const yLine = valueMin === valueMax ? 225 : interpolate(valueCurrent, [valueMin, valueMax], [425, 25]);
+        const yLine = valueMin === valueMax
+            ? 250
+            : valueCurrent < valueMin
+                ? 470
+                : valueCurrent > valueMax
+                    ? 30
+                    : interpolate(valueCurrent, [valueMin, valueMax], [450, 50]);
         let yText = yLine;
 
         for (let i = 0; i < 5; i++) {
-            if (yText > i * 100 + 10 && yText <= i * 100 + 25) {
-                yText = i * 100 + 10;
+            if (yText > i * 100 + 35 && yText <= i * 100 + 50) {
+                yText = i * 100 + 35;
             }
 
-            if (yText > i * 100 + 25 && yText < i * 100 + 40) {
-                yText = i * 100 + 40;
+            if (yText > i * 100 + 50 && yText < i * 100 + 65) {
+                yText = i * 100 + 65;
             }
         }
 
         return (
             <>
-                <line x1={100} y1={yLine} x2={1000} y2={yLine} strokeDasharray="10 5" stroke="#F26126" />
+                {yLine >= 50 && yLine <= 450 && (
+                    <line x1={100} y1={yLine} x2={1000} y2={yLine} strokeDasharray="10 5" stroke="#F26126" />
+                )}
                 <text x={0} y={yText} fill="#F26126" alignmentBaseline="middle">{valueCurrent}</text>
             </>
         );
@@ -139,10 +147,10 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
 
     const candlesticks = useMemo(() => {
         return dataWithXOffset.filter(i => i.x >= 110 && i.x <= 990).map(i => {
-            const high = valueMin === valueMax ? 425 : interpolate(i.high, [valueMin, valueMax], [425, 25]);
-            const low = valueMin === valueMax ? 425 : interpolate(i.low, [valueMin, valueMax], [425, 25]);
-            const open = valueMin === valueMax ? 425 : interpolate(i.open, [valueMin, valueMax], [425, 25]);
-            const close = valueMin === valueMax ? 425 : interpolate(i.close, [valueMin, valueMax], [425, 25]);
+            const high = valueMin === valueMax ? 250 : interpolate(i.high, [valueMin, valueMax], [450, 50]);
+            const low = valueMin === valueMax ? 250 : interpolate(i.low, [valueMin, valueMax], [450, 50]);
+            const open = valueMin === valueMax ? 250 : interpolate(i.open, [valueMin, valueMax], [450, 50]);
+            const close = valueMin === valueMax ? 250 : interpolate(i.close, [valueMin, valueMax], [450, 50]);
             const color = close >= open ? '#3CD280' : '#FF5050';
             return (
                 <React.Fragment key={i.x}>
@@ -154,14 +162,20 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
     }, [dataWithXOffset, valueMin, valueMax]);
 
     const tooltip = useMemo(() => {
-        if (!dataWithXOffset.length || !xClient || isMoving) {
+        if (!dataWithXOffset.length || isMoving) {
             return null;
         }
 
         const boundingClientRect = ref.current?.getBoundingClientRect();
         const x = (xClient - (boundingClientRect?.x ?? 0)) / (boundingClientRect?.width ?? 0) * 1000;
         const index = Math.round((x - 110) / intervalBetweenValues);
-        const item = dataWithXOffset.filter(i => i.x >= 110 && i.x <= 990)[index < 0 ? 0 : index > dataWithX.length - 1 ? dataWithX.length - 1 : index];
+        const dataWithXOffsetFiltered = dataWithXOffset.filter(i => i.x >= 110 && i.x <= 900);
+        const item = dataWithXOffsetFiltered[index < 0 ? 0 : index > dataWithXOffsetFiltered.length - 1 ? dataWithXOffsetFiltered.length - 1 : index];
+
+        if (!item) {
+            return null;
+        }
+
         const xRect = item.x >= 500 ? item.x - 280 : item.x + 20;
         const date = new Date(item.dateTime);
         const day = String(date.getDate()).padStart(2, '0');
@@ -197,8 +211,8 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
 
     const handleMove = useCallback(e => {
         const xClientTemp = e.nativeEvent.touches?.[0].clientX ?? e.nativeEvent.clientX;
-
-        if (xClient && isMoving && props.data.length > 1) {
+        
+        if (isMoving && props.data.length > 1) {
             setXOffset(xOffsetPrev => {
                 const xOffsetTemp = xOffsetPrev + xClient - xClientTemp;
                 return xOffsetTemp <= xMin - 110 ? xMin - 110 : xOffsetTemp >= 0 ? 0 : xOffsetTemp;
@@ -206,12 +220,9 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
         }
 
         setXClient(xClientTemp);
-    }, [props.data, xClient, xMin]);
+    }, [props.data, isMoving, xClient, xMin]);
 
-    const handleFinish = useCallback(() => {
-        setMoving(false);
-        setXClient(undefined);
-    }, []);
+    const handleFinish = useCallback(() => setMoving(false), []);
 
     return (
         <svg
@@ -228,6 +239,7 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
         >
             {props.data.length ? (
                 <>
+                    <rect x={0} y={0} width={1000} height={500} fill='#FFFFFF' />
                     {xAxis}
                     {yAxis}
                     {yAxisCurrent}
@@ -238,7 +250,7 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
                 <>
                     <rect x={0} y={0} width={1000} height={500} fill="#F7F7F8" />
                     <text x={500} y={250} fill="#9393A1" alignmentBaseline="middle" textAnchor="middle">
-                        В настоящее время данные не доступны. Попробуйте позднее.
+                        Нет данных для отображения
                     </text>
                 </>
             )}
