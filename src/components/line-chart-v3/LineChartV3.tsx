@@ -45,7 +45,7 @@ export function LineChartV3(props: ILineChartV3Props) {
             if (dateTimePrev !== dateTime) {
                 dateTimePrev = dateTime;
 
-                if (i.x - xPrev >= (i.x >= 940 ? 150 : 100)) {
+                if (!xPrev || i.x - xPrev >= (i.x >= 940 ? 150 : 100)) {
                     xPrev = i.x;
                     xAxis.push(
                         <React.Fragment key={dateTime}>

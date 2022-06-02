@@ -72,7 +72,7 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
             if (dateTimePrev !== dateTime) {
                 dateTimePrev = dateTime;
 
-                if (i.x >= 110 && i.x <= 990 && (i.x - xPrev) >= (i.x >= 940 ? 150 : 100)) {
+                if (i.x >= 110 && i.x <= 990 && (!xPrev || i.x - xPrev >= (i.x >= 940 ? 150 : 100))) {
                     xPrev = i.x;
                     xAxis.push(
                         <React.Fragment key={dateTime}>
