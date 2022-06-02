@@ -38,7 +38,7 @@ export function LineChartV3(props: ILineChartV3Props) {
         dataWithX.forEach(i => {
             const date = new Date(i.dateTime);
             const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear();
             const dateTime = `${day}.${month}.${year}`;
 
@@ -147,7 +147,7 @@ export function LineChartV3(props: ILineChartV3Props) {
         const yRect = yCircle - 50 <= 50 ? 50 : yCircle >= 400 ? 400 : yCircle - 25;
         const date = new Date(item.dateTime);
         const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');

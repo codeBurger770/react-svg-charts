@@ -65,7 +65,7 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
         dataWithXOffset.forEach(i => {
             const date = new Date(i.dateTime);
             const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear();
             const dateTime = `${day}.${month}.${year}`;
 
@@ -179,7 +179,7 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
         const xRect = item.x >= 500 ? item.x - 280 : item.x + 20;
         const date = new Date(item.dateTime);
         const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
