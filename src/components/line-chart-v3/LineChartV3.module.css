@@ -3,4 +3,5 @@
   object-fit: contain;
   user-select: none;
   font-family: sans-serif;
+  touch-action: none;
 }

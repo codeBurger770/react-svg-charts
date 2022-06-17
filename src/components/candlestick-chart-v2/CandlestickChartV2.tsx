@@ -204,13 +204,13 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
         );
     }, [isMoving, xClient, dataWithXOffset]);
 
-    const handleStart = useCallback(e => {
+    const handlePointerDown = useCallback(e => {
         setMoving(true);
-        setXClient(e.nativeEvent.touches?.[0].clientX ?? e.nativeEvent.clientX);
+        setXClient(e.clientX);
     }, []);
 
-    const handleMove = useCallback(e => {
-        const xClientTemp = e.nativeEvent.touches?.[0].clientX ?? e.nativeEvent.clientX;
+    const handlePointerMove = useCallback(e => {
+        const xClientTemp = e.clientX;
         
         if (isMoving && props.data.length > 1) {
             setXOffset(xOffsetPrev => {
@@ -222,20 +222,16 @@ export function CandlestickChartV2(props: ICandlestickChartV2Props) {
         setXClient(xClientTemp);
     }, [props.data, isMoving, xClient, xMin]);
 
-    const handleFinish = useCallback(() => setMoving(false), []);
+    const handlePointerUp = useCallback(() => setMoving(false), []);
 
     return (
         <svg
             className={styles.chart}
             viewBox="0 0 1000 500"
             ref={ref as any}
-            onMouseDown={handleStart}
-            onMouseMove={handleMove}
-            onMouseUp={handleFinish}
-            onMouseLeave={handleFinish}
-            onTouchStart={handleStart}
-            onTouchMove={handleMove}
-            onTouchEnd={handleFinish}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
         >
             {props.data.length ? (
                 <>

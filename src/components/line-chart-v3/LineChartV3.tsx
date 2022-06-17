@@ -163,17 +163,15 @@ export function LineChartV3(props: ILineChartV3Props) {
         );
     }, [xClient, dataWithX, valueMin, valueMax, intervalBetweenValues]);
 
-    const handleStart = useCallback(e => setXClient(e.nativeEvent.touches?.[0].clientX ?? e.nativeEvent.clientX), []);
+    const handlePointerDownOrMove = useCallback(e => setXClient(e.clientX), []);
 
     return (
         <svg
             className={styles.chart}
             viewBox="0 0 1000 500"
             ref={ref as any}
-            onMouseDown={handleStart}
-            onMouseMove={handleStart}
-            onTouchStart={handleStart}
-            onTouchMove={handleStart}
+            onPointerDown={handlePointerDownOrMove}
+            onPointerMove={handlePointerDownOrMove}
         >
             {props.data.length ? (
                 <>
